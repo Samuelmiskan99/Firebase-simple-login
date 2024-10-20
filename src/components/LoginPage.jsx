@@ -1,8 +1,7 @@
-// LoginPage.jsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebaseConfig";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../firebaseConfig";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,6 +18,15 @@ export default function LoginPage() {
       navigate("/protected"); // Redirect to protected route or home page
     } catch (err) {
       setError("Invalid login credentials. Please try again.", err);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      navigate("/protected"); // Redirect after successful login
+    } catch (err) {
+      setError("Failed to sign in with Google.", err);
     }
   };
 
@@ -63,6 +71,17 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+
+        {/* Google Sign-In Button */}
+        <div className="mt-6 text-center">
+          <button
+            onClick={handleGoogleSignIn}
+            className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg font-bold transition-all duration-200"
+          >
+            Sign in with Google
+          </button>
+        </div>
+
         <div className="mt-6 text-center">
           <p>
             Don't have an account?{" "}
